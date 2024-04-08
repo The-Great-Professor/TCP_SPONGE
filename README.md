@@ -48,5 +48,15 @@ if 等待队列非空
 ```
 
 ## 构建TCP的有限状态机，正确地在各种状态下转换。
+### TCPReceiver
+LISTEN: not ackno().has_value()
+SYN_RECV: ackno().has_value() && !stream_out().input_ended()
+FIN_RECV: stream_out().input_ended()
 
-
+### TCPSender
+CLOSED: next_seqno_absolute() == 0
+SYN_SENT: next_seqno_absolute() > 0 && next_seqno_absolute() == bytes_in_flight()
+SYN_ACKED: next_seqno_absolute() > bytes_in_flight() && !stream_in().eof()
+SYN_ACKED(EOF, but FIN not send): stream_in().eof() && next_seqno_absolute() < stream_in().bytes_written() + 2
+FIN_SENT: stream_in().eof() && next_seqno_absolute() == stream_in().bytes_written() + 2&& bytes_in_flight() > 0
+FIN_ACKED: stream_in().eof() && next_seqno_absolute() == stream_in().bytes_written() + 2 && bytes_in_flight() == 0
