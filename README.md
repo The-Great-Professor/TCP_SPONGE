@@ -68,4 +68,4 @@ if 等待队列非空
 
 **FIN_ACKED:** stream_in().eof() && next_seqno_absolute() == stream_in().bytes_written() + 2 && bytes_in_flight() == 0
 
-![](pic/tcp%20status.png)
+![](pic/tcp_status.png)
