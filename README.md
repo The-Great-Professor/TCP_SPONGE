@@ -1,6 +1,3 @@
-## 性能测试
-![](pic/performance.png)
-
 ## 重组乱序到达的带序列号的字节流；
 定义block为
 ```cpp
@@ -69,3 +66,6 @@ if 等待队列非空
 **FIN_ACKED:** stream_in().eof() && next_seqno_absolute() == stream_in().bytes_written() + 2 && bytes_in_flight() == 0
 
 ![](pic/tcp_status.png)
+
+## 性能测试
+![](pic/performance.png)
