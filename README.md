@@ -18,6 +18,10 @@ struct block {
 |32 bits, wrapping	|64 bits, non-wrapping	    |64 bits, non-wrapping
 |seqno	            |absolute seqno	            |stream index
 
+除了确保接收所有字节的数据外，TCP还必须确保也接收到流的开始和结束。因此，在TCP中，SYN(流开始)和FIN(流结束)标志都被分配了序列号。
+
+为了提高安全性，避免不同连接之间的混淆，并且确保序列号不能被猜测，不太可能重复。因此，流的序列号不是从0开始的。流中的第一个序列号通常是一个随机的32位数字，称为初始序列号(ISN)。
+
 绝对序列号->序列号：截断后32位
 
 序列号->绝对序列号：和上一次的checkpoint比较，选择最近的一个
