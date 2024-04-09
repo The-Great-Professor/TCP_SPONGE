@@ -1,4 +1,5 @@
 ## 重组乱序到达的带序列号的字节流；
+
 定义block为
 ```cpp
 struct block {
@@ -11,16 +12,17 @@ struct block {
 字节流到达后，将它转为block并插入到红黑树（std::set）上，排序方式为序列号的大小。然后对新插入的字节流检查前后block是否可以合并。合并完成后，如果此时红黑树上的最小序列号block可以发送，就将它写入缓冲区。
 
 ## 序列号、绝对序列号与流索引间的转换；
+
+除了确保接收所有字节的数据外，TCP还必须确保也接收到流的开始和结束。因此，在TCP中，SYN(流开始)和FIN(流结束)标志都被分配了序列号。
+
+为了提高安全性，避免不同连接之间的混淆，并且确保序列号不能被猜测，不太可能重复。因此，流的序列号不是从0开始的。流中的第一个序列号通常是一个随机的32位数字，称为初始序列号(ISN)。
+
 |Sequence Numbers	|Absolute Sequence Numbers	|Stream Indices
 |:-:                |:-:                        |:-:
 |Start at the ISN	|Start at 0	                |Start at 0
 |Include SYN/FIN	|Include SYN/FIN	        |Omit SYN/FIN
 |32 bits, wrapping	|64 bits, non-wrapping	    |64 bits, non-wrapping
 |seqno	            |absolute seqno	            |stream index
-
-除了确保接收所有字节的数据外，TCP还必须确保也接收到流的开始和结束。因此，在TCP中，SYN(流开始)和FIN(流结束)标志都被分配了序列号。
-
-为了提高安全性，避免不同连接之间的混淆，并且确保序列号不能被猜测，不太可能重复。因此，流的序列号不是从0开始的。流中的第一个序列号通常是一个随机的32位数字，称为初始序列号(ISN)。
 
 绝对序列号->序列号：截断后32位
 
@@ -49,6 +51,7 @@ if 等待队列非空
 ```
 
 ## 构建TCP的有限状态机，正确地在各种状态下转换。
+
 ### TCPReceiver
 **LISTEN:** not ackno().has_value()
 
